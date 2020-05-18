@@ -1,0 +1,62 @@
+{% load humanize %}
+<form action="{% url 'search' %}" method="get">
+  <!-- Form Row 1 -->
+  <div class="form-row">
+    <div class="col-md-4 mb-3">
+      <label class="sr-only">Keywords</label>
+      <input type="text" name="keywords" value="{{ get_method.keywords }}" class="form-control" placeholder="Keyword (Pool, Garage, etc)" >
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label class="sr-only">City</label>
+      <input type="text" name="city" class="form-control" placeholder="City" value="{{ get_method.city }}">
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label class="sr-only">State</label>
+      <select name="state" class="form-control">
+        <option selected="true" disabled="disabled">Division (All)</option>
+
+       {% for key, value in state_choices.items %}
+            <option value="{{ key }}"
+            {%  if key == get_method.state %}
+                    selected
+            {% endif %}
+            >{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <!-- Form Row 2 -->
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      <label class="sr-only">Bedroom</label>
+      <select name="bedrooms" class="form-control">
+        <option selected="true" disabled="disabled">Bedroom (All)</option>
+
+           {% for key, value in bedroom_choices.items %}
+              <option value="{{ key }}"
+              {%  if key == get_method.bedroom %}
+                    selected
+              {% endif %}
+              >{{ value }}</option>
+          {% endfor %}
+
+      </select>
+    </div>
+    <div class="col-md-6 mb-3">
+      <select name="price" class="form-control" id="type">
+        <option selected="true" disabled="disabled">Max Price (Any)</option>
+
+            {% for key, value in price_choices.items %}
+              <option value="{{ key }}"
+              {%  if key == get_method.price %}
+                    selected
+              {% endif %}
+              >{{ value | intcomma }}</option>
+          {% endfor %}
+      </select>
+    </div>
+  </div>
+  <button class="btn btn-danger btn-block mt-5" type="submit">Search Here !!</button>
+</form>
