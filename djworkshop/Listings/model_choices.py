@@ -1,7 +1,7 @@
 state_choices = {
-    'DH': 'Dhaka',
-    'SYL': 'Sylhet',
-    'CTG': 'Chittagong'
+     'DHAKA': 'Dhaka',
+    'SYLHET': 'Sylhet',
+    'CHITTAGONG': 'Chittagong'
 }
 
 bedroom_choices = {
