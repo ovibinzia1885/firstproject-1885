@@ -1,8 +1,16 @@
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render
-from . models import Listing
+from . models import Listing,Inquiry
 from .model_choices import price_choices, state_choices, bedroom_choices
+# from .models import * # Bad Practise
+from django.contrib import messages
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
+# listings app view
 
 
 
@@ -74,3 +82,32 @@ def search(request):
         'listing_list': listing_list
     }
     return render(request,'Listings/search.html',context)
+
+def listing_inquiry(request):
+    if request.method == "POST":
+        get_method = request.POST.copy()
+        listing = get_method.get('listing')
+        phone = get_method.get('phone')
+        message = get_method.get('message')
+
+
+        listing_object = Listing.objects.get(title=listing)
+
+        inquiry_exist = Inquiry.objects.filter(listing=listing_object, user=request.user)
+
+        if not inquiry_exist:
+            Inquiry.objects.create(listing=listing_object, user=request.user, phone=phone, message=message)
+
+            messages.success(request, 'Inquiry Message Sent Successfully!. Our Team Will Contact You Through Mail.')
+        else:
+            messages.error(request, 'You Inquiried Already!')
+
+        send_mail(
+            'Inquiry Listing From DJRE',
+            'Thank you for contacting us. We Will contact you soon. DJRE Team.',
+            settings.EMAIL_HOST_USER,
+            [request.user.email, settings.EMAIL_HOST_USER],
+            fail_silently=False,
+        )
+
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
